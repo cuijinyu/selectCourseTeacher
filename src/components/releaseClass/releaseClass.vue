@@ -8,43 +8,53 @@
             <el-input v-model="tempClass.name"></el-input>
           </el-form-item>
           <el-form-item label="期数">
-            <el-input v-model="tempClass.stage"></el-input>
+            <el-select v-model="stageLength">
+              <el-option v-for="item in stageOption" :key="item.value" :label="item.label" :value="item.value">
+
+              </el-option>
+            </el-select>
           </el-form-item>
-          <el-form-item label="教室">
-            <el-input v-model="tempClass.classroom"></el-input>
-          </el-form-item>
-          <el-form-item label="教师">
-            <el-input v-model="tempClass.teacher"></el-input>
-          </el-form-item>
-          <el-form-item label="选课时间">
-            <el-date-picker
-              v-model="tempClass.selectClassTime"
-              type="datetimerange"
-              range-separator="至"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期">
-            </el-date-picker>
-          </el-form-item>
-          <el-form-item label="开课时间">
-            <el-date-picker
-              v-model="tempClass.classTime"
-              type="datetimerange"
-              range-separator="至"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期">
-            </el-date-picker>
-          </el-form-item>
+          <div class="time">
+            <div v-for="item in stages" class="chooseTime">
+              <span>{{item.name}} </span>
+              <el-form-item label="选课时间">
+                <el-date-picker
+                  v-model="item.selectClassTime"
+                  type="datetimerange"
+                  range-separator="至"
+                  start-placeholder="开始日期"
+                  end-placeholder="结束日期">
+                </el-date-picker>
+              </el-form-item>
+              <el-form-item label="开课时间">
+                <el-date-picker
+                  v-model="item.classTime"
+                  type="datetimerange"
+                  range-separator="至"
+                  start-placeholder="开始日期"
+                  end-placeholder="结束日期">
+                </el-date-picker>
+              </el-form-item>
+              <el-form-item label="教室">
+                <el-input v-model="item.classroom"></el-input>
+              </el-form-item>
+              <el-form-item label="教师">
+                <el-input v-model="item.teacher"></el-input>
+              </el-form-item>
+            </div>
+          </div>
           <el-form-item label="所占学时">
             <el-input v-model="tempClass.time"></el-input>
           </el-form-item>
           <el-form-item label="上课学生权限">
-            <el-select v-model="tempClass.power">
+            <el-select v-model="tempClass.power" multiple>
               <el-option v-for="item in powerOption" :key="item.value" :label="item.label" :value="item.value">
 
               </el-option>
             </el-select>
           </el-form-item>
         </el-form>
+
         <el-row>
           <el-col :offset="12" :span="12">
             <el-button @click="releaseNewClass()">发布课程</el-button>
@@ -55,6 +65,10 @@
   </div>
 </template>
 <script>
+  let config = require("../../config/config");
+  const ip = config.ip;
+  let $ = require("jquery");
+  let moment = require("moment");
   /**
    * 课程名
    * 期数（数字）
@@ -69,7 +83,19 @@
         name: "release-class",
         data(){
           return {
-            tempClass:{},//用来存储新建的课程信息,
+            stages:[{
+              name:`第1期`,
+              value:1,
+              selectClassTime:[],
+              classTime:[],
+              teacher:"",
+              classroom:""
+            }],
+            tempClass:{
+              power:[]
+            },//用来存储新建的课程信息,
+            stageOption:[],
+            stageLength:1,
             powerOption:[
               {
                 value:2,
@@ -90,14 +116,56 @@
             ]
           }
         },
+        beforeUpdate:function () {
+
+        },
         methods:{
           releaseNewClass(){
-              console.log(this.tempClass)
+              // console.log(this.stages)
+            let self = this;
+            $.post(`http://${ip}/`)
           }
-        }
+        },
+        watch:{
+            stageLength:function () {
+                this.stages = [];
+                for(let i = 0;i < this.stageLength;i ++){
+                  this.stages.push({
+                    name:`第${i+1}期`,
+                    value:i+1,
+                    selectClassTime:[],
+                    classTime:[],
+                    teacher:"",
+                    classroom:""
+                  })
+                }
+            console.log(this.stages)
+          }
+        },
+       beforeMount:function () {
+         for(let i = 0;i<9;i++){
+           this.stageOption.push({
+             value:i+1,
+             label:i+1
+           })
+         }
+       }
     }
 </script>
 
 <style scoped>
-
+  .chooseTime:nth-child(n){
+    padding-top:15px;
+    margin-top:10px;
+    margin-bottom:10px;
+    /*border-top:1px rgba(0,0,0,0.1) solid;*/
+    border-bottom: 1px rgba(0,0,0,0.1) solid;
+  }
+  .chooseTime:first-child{
+    padding-top:20px;
+    margin-top:10px;
+    margin-bottom:10px;
+    border-top:1px rgba(0,0,0,0.1) solid;
+    border-bottom: 1px rgba(0,0,0,0.1) solid;
+  }
 </style>
