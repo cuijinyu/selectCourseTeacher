@@ -49,7 +49,7 @@
     <el-dialog :visible.sync="sureFlag" title="确定修改到课状况吗？">
       <el-row>
         <el-col :offset="9" >
-          <el-button @click="sendFeedBack()">确认</el-button>
+          <el-button @click="sendFeedBack">确认</el-button>
           <el-button @click="sureFlag = false">取消</el-button>
         </el-col>
       </el-row>
@@ -104,16 +104,34 @@
       methods:{
         sendFeedBack(){
           let self = this;
+          console.log(this.absentStudent);
+          console.log(this.selectNo)
           this.sureFlag = false;
-          $.post(`http://${ip}/course/feedback`,{
-            stu:self.absentStudent
-          },function (response) {
-            if(response.code == 1001){
-              self.$message("反馈学生到课状况成功");
+          // $.post(`http://${ip}/course/feedback`,{
+          //   stu:self.absentStudent,
+          //   courseNo:self.selectNo
+          // },function (response) {
+          //   if(response.code == 1001){
+          //     self.$message("反馈学生到课状况成功");
+          //   }else{
+          //     self.$message.error("反馈学生到课信息失败");
+          //   }
+          // })
+
+          this.$http.post(`http://${ip}/course/feedback`,{
+            stu:self.absentStudent,
+            courseNo:self.selectNo
+          }).then((response)=>{
+            console.log(response.data)
+            if(response.data.code == 1001){
+              self.$message("反馈到课信息成功");
             }else{
-              self.$message.error("反馈学生到课信息失败");
+              self.$message.error("反馈到课信息失败");
             }
+          }).catch(err=>{
+            console.log(err);
           })
+
         },
         feedback(no,stage){
           /***
