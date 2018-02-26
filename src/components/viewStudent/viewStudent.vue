@@ -451,10 +451,20 @@
             cancelButtonText: '取消',
             type: 'warning'
           }).then(() => {
-            this.$message({
-              type: 'info',
-              message: '删除学生成功'
-            });
+            $.post(`http://${ip}/stu/delete`,{
+              no:row.no
+            },function (response) {
+              if(response.code == 1001){
+                self.$message({
+                  type: 'info',
+                  message: '删除学生成功'
+                });
+                self.students = [];
+                self.getAllStudents();
+              }else{
+                self.$message.error("something wrong");
+              }
+            })
           }).catch(() => {
             this.$message({
               type: 'info',
@@ -664,6 +674,7 @@
       },
       watch:{
         selectParty:function () {
+          this.students = [];
           this.getAllStudents();
         },
         filterID:function () {
