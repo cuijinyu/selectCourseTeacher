@@ -658,7 +658,6 @@
         }
       },
       beforeMount:function () {
-
         /**
          * 获取基层党组织信息
          * @type {beforeMount}
@@ -686,9 +685,9 @@
             for(let i = 0;i < this.beforeFilter.length;i++){
               if(this.beforeFilter[i].no.indexOf(`${this.filterID}`) >=0){
                 temp.push(this.beforeFilter[i]);
-                this.students = temp;
               }
             }
+            this.students = temp;
           }
         },
         filterName:function () {
@@ -703,9 +702,9 @@
               console.log(this.beforeFilter[i].name.indexOf(`${this.filterName}`))
               if(this.beforeFilter[i].name.indexOf(`${this.filterName}`) >=0){
                 temp.push(this.beforeFilter[i]);
-                this.students = temp;
               }
             }
+            this.students = temp;
           }
         },
         selectStudentInfo:function(){
