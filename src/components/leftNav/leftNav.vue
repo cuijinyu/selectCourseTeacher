@@ -25,6 +25,10 @@
                     <el-menu-item index="/feedBack">反馈到课情况</el-menu-item>
                   </el-menu-item-group>
                 </el-submenu>
+              <el-menu-item index="/changePassword">
+                <i class="el-icon-warning"></i>
+                <span slot="title">修改密码</span>
+              </el-menu-item>
             </el-menu>
         </el-col>
     </el-row>

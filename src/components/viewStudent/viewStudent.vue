@@ -317,7 +317,7 @@
         <el-table-column label="座位编号" prop="seatNo">
 
         </el-table-column>
-        <el-table-column label="课程名称" prop="name">
+        <el-table-column label="课程名称" prop="courseName">
 
         </el-table-column>
         <el-table-column label="教室" prop="classroom">
@@ -326,12 +326,18 @@
         <el-table-column label="教师" prop="teacher">
 
         </el-table-column>
-        <el-table-column label="开课时间" prop="startTime">
 
-        </el-table-column>
-        <el-table-column label="结课时间" prop="endTime">
-
-        </el-table-column>
+        <!--奇怪的问题，不会更新-->
+        <!--<el-table-column label="开课时间" prop="startDateTimeLabel">-->
+          <!--<template slot-scope="scope">-->
+            <!--{{scope.row.startDateTIme}}-->
+          <!--</template>-->
+        <!--</el-table-column>-->
+        <!--<el-table-column label="结课时间" prop="endDateTimeLabel">-->
+          <!--<template slot-scope="scope">-->
+            <!--{{scope.row.startDateTIme}}-->
+          <!--</template>-->
+        <!--</el-table-column>-->
         <el-table-column label="课程期数" prop="stage">
 
         </el-table-column>
@@ -413,16 +419,25 @@
            * 查看某个学生选课
            * */
           let self = this;
+          self.tempStuNoCancelFlag = row.no;
+          console.log(self.tempStuNoCancelFlag);
           $.post(`http://${ip}/course/stuSelectStatus`,{
             stuNo:row.no
           },function (response) {
             if(response.code == 1001){
               self.tableData = response.data;
-              self.showChooseClass = true;
+              self.tableData.startDateTimeLabel = moment(self.tableData.startDateTime).format("YYYY/MM/DD hh:mm:ss")
+              self.tableData.endDateTimeLabel = moment(self.tableData.endDateTime).format("YYYY/MM/DD hh:mm:ss")
             }else{
               self.$message.error("获取学生选课信息失败")
             }
           })
+          this.tableData.startDateTime = moment(this.tableData.startDateTime).format("YYYY/MM/DD hh:mm:ss")
+          this.tableData.endDateTime = moment(this.tableData.endDateTime).format("YYYY/MM/DD hh:mm:ss")
+          console.log(this.tableData.startDateTime);
+          setTimeout(function () {
+            self.showChooseClass = true;
+          },100)
         },
         getSpecialSchoolStudents:function (schoolNo) {
 
@@ -473,6 +488,7 @@
           });
         },
         cancelChoose(row){
+          let self = this;
           this.$confirm('此操作将取消该学生选课, 是否继续?', '提示', {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
@@ -483,15 +499,17 @@
               stuNo:self.tempStuNoCancelFlag
             },function (response) {
               if(response.code == 1001){
-                this.$message({
+                self.$message({
                   type: 'success',
                   message: '取消选课成功!'
                 });
+                self.showChooseClass = false;
               }else{
-                this.$message({
+                self.$message({
                   type: 'info',
                   message: '取消选课失败'
                 });
+                self.showChooseClass = false;
               }
             })
           }).catch(() => {

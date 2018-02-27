@@ -183,8 +183,18 @@
           this.tempStudentInfo.applyDate = moment(this.tempStudentInfo.applyDate).format("YYYY/MM/DD");
           this.tempStudentInfo.beDevelopDate = moment(this.tempStudentInfo.beDevelopDate).format("YYYY/MM/DD");
           this.tempStudentInfo.beActivistDate = moment(this.tempStudentInfo.beActivistDate).format("YYYY/MM/DD");
+          let req = _.clone(this.tempStudentInfo);
+          if(req.applyDate == ""){
+            delete req.applyDate;
+          }
+          if(req.beDevelopDate == ""){
+            delete req.beDevelopDate;
+          }
+          if(req.beActivistDate == ""){
+            delete req.beActivistDate;
+          }
           console.log(this.tempStudentInfo)
-          $.post(`http://${ip}/stu/addOne`,self.tempStudentInfo,function (response) {
+          $.post(`http://${ip}/stu/addOne`,req,function (response) {
             if(response.code == 1001){
               self.$message("添加学员成功");
               self.tempStudentInfo = {};
