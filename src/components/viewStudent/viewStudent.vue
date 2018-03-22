@@ -134,7 +134,7 @@
                 :page-size="20"
                 @current-change="handleCurrentChange"
                 layout="prev, pager, next"
-                :total="students.length%20">
+                :total="students.length">
               </el-pagination>
             </el-col>
           </el-row>
